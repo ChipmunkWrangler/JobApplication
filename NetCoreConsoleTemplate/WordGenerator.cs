@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace MyFancyNamespace
+namespace JobApplication
 {
     public class WordGenerator
     {

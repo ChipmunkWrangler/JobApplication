@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MyFancyNamespace
+namespace JobApplication
 {
     public class Program
     {

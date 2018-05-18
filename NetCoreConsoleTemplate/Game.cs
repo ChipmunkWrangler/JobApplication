@@ -4,7 +4,7 @@ using System.Diagnostics; // wanted to use Code Contracts, but that requires add
 using System.Text;
 using System.Collections.Generic;
 
-namespace MyFancyNamespace
+namespace JobApplication
 {
     // Represents the internal state of a single game
     class Game
