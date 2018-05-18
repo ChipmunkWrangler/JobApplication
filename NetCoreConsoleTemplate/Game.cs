@@ -9,7 +9,6 @@ namespace JobApplication
     // Represents the internal state of a single game
     class Game
     {
-        public string wordToGuess { get; private set; }
         public string bestCompositeGuess { get; private set; }
         public HashSet<char> untriedLetters { get; private set; } = new HashSet<char>("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         public HashSet<char> eliminatedLetters { get; private set; } = new HashSet<char>();
@@ -18,25 +17,34 @@ namespace JobApplication
         readonly WordGenerator wordGenerator;
         readonly char unknownChar;
 
+        private string wordToGuess = "";
+        bool isWordToGuessChosen = false;
+
         // take configuration parameters that we would expect the user or some metagame system to supply
         public Game(int wordLength, char unknownCharRepresentation) 
         {
             unknownChar = unknownCharRepresentation;
             untriedLetters.Remove(unknownCharRepresentation);
             wordGenerator = new WordGenerator();
-            wordToGuess = wordGenerator.GetWord(wordLength, Helpers.Stringify(untriedLetters));
+            wordToGuess = new string(unknownCharRepresentation, wordLength); // cheat! We decide what the word is *after* the user guesses
             bestCompositeGuess = new string(unknownCharRepresentation, wordLength);
             Console.WriteLine(wordToGuess);
         }
 
-        public void Guess(string guess)
+        public bool Guess(string guess)
         {
+            if (!isWordToGuessChosen && untriedLetters.Count <= wordToGuess.Length * 2) // to ensure we have enough choice to make the last guesses nontrivial
+            { // we are backed into a corner
+                wordToGuess = wordGenerator.GetWord(wordToGuess.Length, Helpers.Stringify(untriedLetters));
+                isWordToGuessChosen = true;
+            }
             Debug.Assert(guess.Length == wordToGuess.Length);
             bestCompositeGuess = GetNewCompositeGuess(guess);
             var wrongLetters = guess.Except(wordToGuess);
             eliminatedLetters = eliminatedLetters.Union(wrongLetters).ToHashSet<char>();
             untriedLetters = untriedLetters.Except(guess).ToHashSet<char>();
             wronglyPositionedLetters = GetWronglyPositionedLetters(guess);
+            return wordToGuess == guess;
         }
 
         public HashSet<char> GetWronglyPositionedLetters(string guess)

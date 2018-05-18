@@ -16,13 +16,10 @@ namespace JobApplication
         {
             var game = new Game(wordLength, unknownChar);
             Console.WriteLine("Welcome!");
-            string guess = "";
-            do
+            while(!game.Guess(GetNewGuess()))
             {
-                guess = GetNewGuess();
-                game.Guess(guess);
                 Console.WriteLine(game.bestCompositeGuess + " untried = " + Helpers.Stringify(game.untriedLetters) + "  to be included = " + Helpers.Stringify(game.wronglyPositionedLetters));
-            } while (game.wordToGuess != guess);
+            };
             Console.WriteLine("Right!");
         }
 
