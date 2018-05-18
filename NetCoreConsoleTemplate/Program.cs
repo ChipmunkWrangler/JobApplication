@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MyFancyNamespace
 {
@@ -12,16 +13,17 @@ namespace MyFancyNamespace
             PlayOnConsole();
         }
 
-        private static void PlayOnConsole() 
+        private static void PlayOnConsole()
         {
             var game = new Game(wordLength, unknownChar);
             Console.WriteLine("Welcome!");
-            string guess = new string(unknownChar, wordLength);
-            while (!game.IsGuessCorrect(guess))
+            string guess = "";
+            do
             {
                 guess = GetNewGuess();
-                Console.WriteLine(game.GetCorrectAndUnknownChars(guess) + " (" + game.GetWronglyPositionedChars(guess) + ")");
-            }
+                game.Guess(guess);
+                Console.WriteLine(game.bestCompositeGuess + " untried = " + Stringify(game.untriedLetters) + "  to be included = " + Stringify(game.wronglyPositionedLetters));
+            } while (game.wordToGuess != guess);
             Console.WriteLine("Right!");
         }
 
@@ -35,6 +37,11 @@ namespace MyFancyNamespace
                 newGuess = Console.ReadLine();
             };
             return newGuess.ToUpper();
+        }
+
+        private static string Stringify(IEnumerable<char> chars)
+        {
+            return string.Join("", chars);
         }
     }
 }

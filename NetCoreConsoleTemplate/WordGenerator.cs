@@ -5,7 +5,7 @@ namespace MyFancyNamespace
 {
     public class WordGenerator
     {
-        readonly string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        public string alphabet { get; private set; } = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         Random random = new Random();
 
@@ -22,11 +22,6 @@ namespace MyFancyNamespace
                 stringBuilder.Append(alphabet[random.Next(alphabet.Length)]);
             }
             return stringBuilder.ToString();
-        }
-
-        public string GetAlphabet() 
-        {
-            return alphabet;
         }
     }
 }

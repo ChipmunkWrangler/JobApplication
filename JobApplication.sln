@@ -17,4 +17,12 @@ Global
 		{B2D2FC08-A703-4F94-9F47-AAF099761E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2D2FC08-A703-4F94-9F47-AAF099761E81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 80
+		$1.TabsToSpaces = True
+		$1.EolMarker = Unix
+		$1.scope = text/plain
+	EndGlobalSection
 EndGlobal

@@ -2,19 +2,21 @@
 using System.Linq;
 using System.Diagnostics; // wanted to use Code Contracts, but that requires additional setup I don't have time for
 using System.Text;
-
+using System.Collections.Generic;
 
 namespace MyFancyNamespace
 {
     // Represents the internal state of a single game
     class Game
     {
-        // hard-code configuration that we would expect the game designer to supply, such as what kind of WordGenerator to use (no dependency injection for now)
+        public string wordToGuess { get; private set; }
+        public string bestCompositeGuess { get; private set; }
+        public HashSet<char> untriedLetters { get; private set; }
+        public HashSet<char> eliminatedLetters { get; private set; } = new HashSet<char>();
+        public HashSet<char> wronglyPositionedLetters { get; private set; } = new HashSet<char>();
+
         readonly WordGenerator wordGenerator;
         readonly char unknownChar;
-
-        string wordToGuess;
-        string bestGuess;
 
         // take configuration parameters that we would expect the user or some metagame system to supply
         public Game(int wordLength, char unknownCharRepresentation) 
@@ -22,43 +24,58 @@ namespace MyFancyNamespace
             wordGenerator = new WordGenerator(unknownCharRepresentation);
             wordToGuess = wordGenerator.GetWord(wordLength);
             unknownChar = unknownCharRepresentation;
-            bestGuess = new string(unknownCharRepresentation, wordLength);
+            bestCompositeGuess = new string(unknownCharRepresentation, wordLength);
+            untriedLetters = wordGenerator.alphabet.ToHashSet<char>();
             Console.WriteLine(wordToGuess);
         }
 
-        public bool IsGuessCorrect(string guess)
+        public void Guess(string guess)
         {
             Debug.Assert(guess.Length == wordToGuess.Length);
-            return guess == wordToGuess;
+            bestCompositeGuess = GetNewCompositeGuess(guess);
+            var wrongLetters = guess.Except(wordToGuess);
+            eliminatedLetters = eliminatedLetters.Union(wrongLetters).ToHashSet<char>();
+            untriedLetters = untriedLetters.Except(guess).ToHashSet<char>();
+            wronglyPositionedLetters = GetWronglyPositionedLetters(guess);
         }
 
-        public string GetCorrectAndUnknownChars(string guess)
+        public HashSet<char> GetWronglyPositionedLetters(string guess)
         {
-            Debug.Assert(guess.Length == wordToGuess.Length);
-            Debug.Assert(guess.Length == bestGuess.Length);
-            var newBestGuessBuilder = new StringBuilder(bestGuess.Length);
-            for (int i = 0; i < guess.Length; ++i)
-            {
-                newBestGuessBuilder.Append((wordToGuess[i] == guess[i]) ? guess[i] : bestGuess[i]);
-            }
-            bestGuess = newBestGuessBuilder.ToString();
-            return bestGuess;
+            var rightLettersThisGuess = guess.Intersect(wordToGuess);
+            var rightLettersEverGuessed = wronglyPositionedLetters.Union(rightLettersThisGuess);
+            string lettersLeftToGuess = GetLettersLeftToGuess(guess); // non-unique but unordered, e.g. eaec
+            return rightLettersEverGuessed.Intersect(lettersLeftToGuess).ToHashSet<char>();
         }
 
-        public string GetWronglyPositionedChars(string guess)
+
+        private string GetLettersLeftToGuess(string guess)
         {
-            Debug.Assert(guess.Length == wordToGuess.Length);
-            string leftoverCharsToGuess = "";
-            for (int i = 0; i < guess.Length; ++i ) 
+            Debug.Assert(bestCompositeGuess.Length == wordToGuess.Length);
+            var sb = new StringBuilder();
+            for (int i = 0; i < wordToGuess.Length; ++i)
             {
-                if (wordToGuess[i] != guess[i])   
+                if (bestCompositeGuess[i] == unknownChar)
                 {
-                    leftoverCharsToGuess += wordToGuess[i];
+                    sb.Append(wordToGuess[i]);
                 }
             }
-            return string.Join("", guess.Intersect(leftoverCharsToGuess));
+            return sb.ToString();
+        }
+
+
+        private string GetNewCompositeGuess(string guess)
+        {
+            Debug.Assert(guess.Length == bestCompositeGuess.Length);
+            Debug.Assert(guess.Length == wordToGuess.Length);
+            var newBestGuessBuilder = new StringBuilder(bestCompositeGuess.Length);
+            for (int i = 0; i < guess.Length; ++i)
+            {
+                newBestGuessBuilder.Append((wordToGuess[i] == guess[i]) ? guess[i] : bestCompositeGuess[i]);
+            }
+            return newBestGuessBuilder.ToString();
         }
     }
 }
+
 
 

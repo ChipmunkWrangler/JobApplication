@@ -5,4 +5,15 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="StyleCop.Cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Game.cs">
+      <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Program.cs">
+      <ExcludeFromStyleCop>false</ExcludeFromStyleCop>
+    </Compile>
+  </ItemGroup>
 </Project>
