@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace JobApplication
 {
     public class WordGenerator
     {
-        public string alphabet { get; private set; } = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
         Random random = new Random();
 
-        public WordGenerator(char unknownCharRepresenation) 
-        {
-            alphabet.Replace(unknownCharRepresenation.ToString(), string.Empty);
-        }
-
-        public string GetWord(int wordLength)
+        public string GetWord(int wordLength, string alphabet)
         {
             var stringBuilder = new StringBuilder(wordLength);
             for (int i = 0; i < wordLength; ++i)

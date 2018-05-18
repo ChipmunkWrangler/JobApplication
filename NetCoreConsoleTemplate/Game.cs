@@ -11,7 +11,7 @@ namespace JobApplication
     {
         public string wordToGuess { get; private set; }
         public string bestCompositeGuess { get; private set; }
-        public HashSet<char> untriedLetters { get; private set; }
+        public HashSet<char> untriedLetters { get; private set; } = new HashSet<char>("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         public HashSet<char> eliminatedLetters { get; private set; } = new HashSet<char>();
         public HashSet<char> wronglyPositionedLetters { get; private set; } = new HashSet<char>();
 
@@ -21,11 +21,11 @@ namespace JobApplication
         // take configuration parameters that we would expect the user or some metagame system to supply
         public Game(int wordLength, char unknownCharRepresentation) 
         {
-            wordGenerator = new WordGenerator(unknownCharRepresentation);
-            wordToGuess = wordGenerator.GetWord(wordLength);
             unknownChar = unknownCharRepresentation;
+            untriedLetters.Remove(unknownCharRepresentation);
+            wordGenerator = new WordGenerator();
+            wordToGuess = wordGenerator.GetWord(wordLength, Helpers.Stringify(untriedLetters));
             bestCompositeGuess = new string(unknownCharRepresentation, wordLength);
-            untriedLetters = wordGenerator.alphabet.ToHashSet<char>();
             Console.WriteLine(wordToGuess);
         }
 
