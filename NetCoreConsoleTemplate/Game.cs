@@ -17,8 +17,7 @@ namespace JobApplication
         readonly WordGenerator wordGenerator;
         readonly char unknownChar;
 
-        private string wordToGuess = "";
-        bool isWordToGuessChosen = false;
+        private string wordToGuess;
 
         // take configuration parameters that we would expect the user or some metagame system to supply
         public Game(int wordLength, char unknownCharRepresentation) 
@@ -33,11 +32,7 @@ namespace JobApplication
 
         public bool Guess(string guess)
         {
-            if (!isWordToGuessChosen && untriedLetters.Count <= wordToGuess.Length * 2) // to ensure we have enough choice to make the last guesses nontrivial
-            { // we are backed into a corner
-                wordToGuess = wordGenerator.GetWord(wordToGuess.Length, Helpers.Stringify(untriedLetters));
-                isWordToGuessChosen = true;
-            }
+            wordToGuess = wordGenerator.GetWordCheat(unknownChar, guess, bestCompositeGuess, Helpers.Stringify(untriedLetters), Helpers.Stringify(wronglyPositionedLetters));
             Debug.Assert(guess.Length == wordToGuess.Length);
             bestCompositeGuess = GetNewCompositeGuess(guess);
             var wrongLetters = guess.Except(wordToGuess);
