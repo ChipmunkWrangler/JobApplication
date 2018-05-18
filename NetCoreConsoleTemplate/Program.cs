@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace JobApplication
 {
@@ -22,7 +21,7 @@ namespace JobApplication
             {
                 guess = GetNewGuess();
                 game.Guess(guess);
-                Console.WriteLine(game.bestCompositeGuess + " untried = " + Stringify(game.untriedLetters) + "  to be included = " + Stringify(game.wronglyPositionedLetters));
+                Console.WriteLine(game.bestCompositeGuess + " untried = " + Helpers.Stringify(game.untriedLetters) + "  to be included = " + Helpers.Stringify(game.wronglyPositionedLetters));
             } while (game.wordToGuess != guess);
             Console.WriteLine("Right!");
         }
@@ -35,13 +34,8 @@ namespace JobApplication
             {
                 Console.Write("Guess has wrong length. Please try again: ");
                 newGuess = Console.ReadLine();
-            };
+            }
             return newGuess.ToUpper();
-        }
-
-        private static string Stringify(IEnumerable<char> chars)
-        {
-            return string.Join("", chars);
         }
     }
 }
