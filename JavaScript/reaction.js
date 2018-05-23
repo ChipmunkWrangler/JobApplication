@@ -1,6 +1,6 @@
 var leftCode = 70; // F-position
 var rightCode = 74; // J-position
-var hideDelay = 5000;
+var hideDelay = 500;
 var minShowDelay = 500;
 var maxShowDelay = 3000;
 var stimulusText = "!!!";
