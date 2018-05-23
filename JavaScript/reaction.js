@@ -28,7 +28,6 @@ function handleValidKeypress(keyCode) {
     }
     startRound();
 }
-document.addEventListener('keydown', inputHandler);
 
 function startRound()
 {
@@ -63,4 +62,5 @@ function hideStimulus()
     rightStimulus.textContent = "";
 }
 
+document.addEventListener('keydown', inputHandler);
 startRound();
